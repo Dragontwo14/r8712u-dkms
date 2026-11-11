@@ -1,0 +1,22 @@
+# Original Linux source checkout
+/source/
+
+# Backup files
+*.save
+*.bak
+*.orig
+*.rej
+
+# Kernel build artifacts
+*.o
+*.ko
+*.mod
+*.mod.c
+*.order
+*.symvers
+.*.cmd
+*.cmd
+.tmp_versions/
+
+# DKMS and temporary files
+*.log

@@ -1,0 +1,144 @@
+diff -ruN source/drivers/staging/rtl8712/mlme_linux.c r8712u-dkms/src/mlme_linux.c
+--- source/drivers/staging/rtl8712/mlme_linux.c	2026-11-10 20:29:56.913667444 +0100
++++ r8712u-dkms/src/mlme_linux.c	2026-11-11 12:07:09.931070865 +0100
+@@ -23,8 +23,8 @@
+ static void sitesurvey_ctrl_handler(struct timer_list *t)
+ {
+ 	struct _adapter *adapter =
+-		from_timer(adapter, t,
+-			   mlmepriv.sitesurveyctrl.sitesurvey_ctrl_timer);
++		container_of(t, struct _adapter,
++		     mlmepriv.sitesurveyctrl.sitesurvey_ctrl_timer);
+ 
+ 	_r8712_sitesurvey_ctrl_handler(adapter);
+ 	mod_timer(&adapter->mlmepriv.sitesurveyctrl.sitesurvey_ctrl_timer,
+@@ -34,7 +34,7 @@
+ static void join_timeout_handler (struct timer_list *t)
+ {
+ 	struct _adapter *adapter =
+-		from_timer(adapter, t, mlmepriv.assoc_timer);
++		container_of(t, struct _adapter, mlmepriv.assoc_timer);
+ 
+ 	_r8712_join_timeout_handler(adapter);
+ }
+@@ -42,7 +42,7 @@
+ static void _scan_timeout_handler (struct timer_list *t)
+ {
+ 	struct _adapter *adapter =
+-		from_timer(adapter, t, mlmepriv.scan_to_timer);
++		container_of(t, struct _adapter, mlmepriv.scan_to_timer);
+ 
+ 	r8712_scan_timeout_handler(adapter);
+ }
+@@ -50,7 +50,7 @@
+ static void dhcp_timeout_handler (struct timer_list *t)
+ {
+ 	struct _adapter *adapter =
+-		from_timer(adapter, t, mlmepriv.dhcp_timer);
++		container_of(t, struct _adapter, mlmepriv.dhcp_timer);
+ 
+ 	_r8712_dhcp_timeout_handler(adapter);
+ }
+@@ -58,7 +58,7 @@
+ static void wdg_timeout_handler (struct timer_list *t)
+ {
+ 	struct _adapter *adapter =
+-		from_timer(adapter, t, mlmepriv.wdg_timer);
++		container_of(t, struct _adapter, mlmepriv.wdg_timer);
+ 
+ 	r8712_wdg_wk_cmd(adapter);
+ 
+diff -ruN source/drivers/staging/rtl8712/recv_linux.c r8712u-dkms/src/recv_linux.c
+--- source/drivers/staging/rtl8712/recv_linux.c	2026-11-10 20:29:56.914483780 +0100
++++ r8712u-dkms/src/recv_linux.c	2026-11-11 12:07:09.920918094 +0100
+@@ -127,7 +127,7 @@
+ static void _r8712_reordering_ctrl_timeout_handler (struct timer_list *t)
+ {
+ 	struct recv_reorder_ctrl *reorder_ctrl =
+-			 from_timer(reorder_ctrl, t, reordering_ctrl_timer);
++			 container_of(t, struct recv_reorder_ctrl, reordering_ctrl_timer);
+ 
+ 	r8712_reordering_ctrl_timeout_handler(reorder_ctrl);
+ }
+diff -ruN source/drivers/staging/rtl8712/rtl8712_led.c r8712u-dkms/src/rtl8712_led.c
+--- source/drivers/staging/rtl8712/rtl8712_led.c	2026-11-10 20:29:56.916483854 +0100
++++ r8712u-dkms/src/rtl8712_led.c	2026-11-11 12:07:09.931377844 +0100
+@@ -811,7 +811,7 @@
+  */
+ static void BlinkTimerCallback(struct timer_list *t)
+ {
+-	struct LED_871x  *pLed = from_timer(pLed, t, BlinkTimer);
++	struct LED_871x *pLed = container_of(t, struct LED_871x, BlinkTimer);
+ 
+ 	/* This fixed the crash problem on Fedora 12 when trying to do the
+ 	 * insmod;ifconfig up;rmmod commands.
+diff -ruN source/drivers/staging/rtl8712/rtl871x_cmd.c r8712u-dkms/src/rtl871x_cmd.c
+--- source/drivers/staging/rtl8712/rtl871x_cmd.c	2026-11-10 20:29:56.917483892 +0100
++++ r8712u-dkms/src/rtl871x_cmd.c	2026-11-11 12:07:09.919402066 +0100
+@@ -32,7 +32,7 @@
+ #include <linux/atomic.h>
+ #include <linux/semaphore.h>
+ #include <linux/rtnetlink.h>
+-
++#include <linux/timer.h>
+ #include "osdep_service.h"
+ #include "drv_types.h"
+ #include "recv_osdep.h"
+diff -ruN source/drivers/staging/rtl8712/rtl871x_ioctl_linux.c r8712u-dkms/src/rtl871x_ioctl_linux.c
+--- source/drivers/staging/rtl8712/rtl871x_ioctl_linux.c	2026-11-10 20:29:56.917483892 +0100
++++ r8712u-dkms/src/rtl871x_ioctl_linux.c	2026-11-11 12:07:09.924577450 +0100
+@@ -35,6 +35,7 @@
+ #include <net/iw_handler.h>
+ #include <linux/if_arp.h>
+ #include <linux/etherdevice.h>
++#include <linux/hex.h>
+ 
+ #define RTL_IOCTL_WPA_SUPPLICANT	(SIOCIWFIRSTPRIV + 0x1E)
+ 
+diff -ruN source/drivers/staging/rtl8712/rtl871x_pwrctrl.c r8712u-dkms/src/rtl871x_pwrctrl.c
+--- source/drivers/staging/rtl8712/rtl871x_pwrctrl.c	2026-11-10 20:29:56.918483929 +0100
++++ r8712u-dkms/src/rtl871x_pwrctrl.c	2026-11-11 12:07:09.925343095 +0100
+@@ -155,7 +155,7 @@
+ static void rpwm_check_handler (struct timer_list *t)
+ {
+ 	struct _adapter *adapter =
+-		from_timer(adapter, t, pwrctrlpriv.rpwm_check_timer);
++		container_of(t, struct _adapter, pwrctrlpriv.rpwm_check_timer);
+ 
+ 	_rpwm_check_handler(adapter);
+ }
+diff -ruN source/drivers/staging/rtl8712/rtl871x_security.c r8712u-dkms/src/rtl871x_security.c
+--- source/drivers/staging/rtl8712/rtl871x_security.c	2026-11-10 20:29:56.918483929 +0100
++++ r8712u-dkms/src/rtl871x_security.c	2026-11-11 12:07:09.928120813 +0100
+@@ -31,7 +31,7 @@
+ #include <linux/crc32poly.h>
+ #include <linux/semaphore.h>
+ #include <linux/ieee80211.h>
+-
++#include <linux/timer.h>
+ #include "osdep_service.h"
+ #include "drv_types.h"
+ #include "osdep_intf.h"
+@@ -1379,8 +1379,8 @@
+ 
+ void r8712_use_tkipkey_handler(struct timer_list *t)
+ {
+-	struct _adapter *padapter =
+-		from_timer(padapter, t, securitypriv.tkip_timer);
++    struct _adapter *padapter =
++	container_of(t, struct _adapter, securitypriv.tkip_timer);
+ 
+ 	padapter->securitypriv.busetkipkey = true;
+ }
+diff -ruN source/drivers/staging/rtl8712/usb_intf.c r8712u-dkms/src/usb_intf.c
+--- source/drivers/staging/rtl8712/usb_intf.c	2026-11-10 20:29:56.918483929 +0100
++++ r8712u-dkms/src/usb_intf.c	2026-11-11 12:07:09.925970536 +0100
+@@ -19,7 +19,7 @@
+ #include <linux/usb.h>
+ #include <linux/module.h>
+ #include <linux/firmware.h>
+-
++#include <linux/hex.h>
+ #include "osdep_service.h"
+ #include "drv_types.h"
+ #include "recv_osdep.h"

@@ -1,0 +1,37 @@
+obj-m += r8712u.o
+
+r8712u-y := \
+    src/rtl871x_cmd.o \
+    src/rtl8712_cmd.o \
+    src/rtl871x_security.o \
+    src/rtl871x_eeprom.o \
+    src/rtl8712_efuse.o \
+    src/hal_init.o \
+    src/usb_halinit.o \
+    src/usb_ops.o \
+    src/usb_ops_linux.o \
+    src/rtl871x_io.o \
+    src/rtl8712_io.o \
+    src/rtl871x_ioctl_linux.o \
+    src/rtl871x_ioctl_rtl.o \
+    src/rtl871x_ioctl_set.o \
+    src/rtl8712_led.o \
+    src/rtl871x_mlme.o \
+    src/ieee80211.o \
+    src/rtl871x_mp_ioctl.o \
+    src/rtl871x_mp.o \
+    src/mlme_linux.o \
+    src/recv_linux.o \
+    src/xmit_linux.o \
+    src/usb_intf.o \
+    src/os_intfs.o \
+    src/rtl871x_pwrctrl.o \
+    src/rtl8712_recv.o \
+    src/rtl871x_recv.o \
+    src/rtl871x_sta_mgt.o \
+    src/rtl871x_xmit.o \
+    src/rtl8712_xmit.o
+
+ccflags-y += -I$(src)/src
+ccflags-y += -Ddel_timer=timer_delete
+ccflags-y += -Ddel_timer_sync=timer_delete_sync
